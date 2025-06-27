@@ -1,0 +1,712 @@
+/* --- Global Styles & Variables --- */
+:root {
+    --primary-color: #6a8d8f; /* Tealish green */
+    --secondary-color: #a2d2ff; /* Light blue */
+    --accent-color: #ffafcc; /* Soft pink */
+    --dark-color: #333;
+    --light-color: #f8f9fa;
+    --white-color: #ffffff;
+    --heading-font: 'Playfair Display', serif;
+    --body-font: 'Montserrat', sans-serif;
+    --base-font-size: 16px;
+    --container-width: 1100px;
+    --transition-speed: 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* Enable smooth scrolling */
+    font-size: var(--base-font-size);
+}
+
+body {
+    font-family: var(--body-font);
+    line-height: 1.7;
+    color: var(--dark-color);
+    background-color: var(--white-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+    line-height: 1.3;
+    margin-bottom: 0.75em;
+    color: var(--primary-color);
+}
+
+h1 { font-size: 2.8rem; }
+h2 { font-size: 2.2rem; text-align: center; margin-bottom: 1.5em;}
+h3 { font-size: 1.5rem; color: var(--primary-color); }
+
+p {
+    margin-bottom: 1em;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+
+a:hover {
+    color: var(--accent-color);
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px; /* Add padding for smaller screens */
+}
+
+/* --- Utility Classes --- */
+.highlight {
+    color: var(--accent-color);
+    font-style: italic;
+}
+
+.alt-bg {
+    background-color: var(--light-color);
+}
+
+.content-section {
+    padding: 80px 0;
+}
+
+/* --- Header --- */
+#main-header {
+    background-color: var(--white-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky; /* Make header sticky */
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
+#main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#main-header .logo {
+    font-size: 1.8rem;
+    margin-bottom: 0; /* Override default h1 margin */
+    font-weight: 700;
+}
+
+#main-header nav ul {
+    display: flex;
+}
+
+#main-header nav ul li {
+    margin-left: 25px;
+}
+
+#main-header nav ul li a {
+    font-weight: 400;
+    padding: 5px 0;
+    position: relative;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Underline effect for nav links */
+#main-header nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    display: block;
+    margin-top: 5px;
+    right: 0;
+    background: var(--accent-color);
+    transition: width var(--transition-speed);
+    transition-timing-function: ease-out;
+}
+
+#main-header nav ul li a:hover::after {
+    width: 100%;
+    left: 0;
+    background-color: var(--accent-color);
+}
+
+.mobile-nav-toggle { /* Basic style for mobile toggle */
+    display: none; /* Hide by default */
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--primary-color);
+}
+
+
+/* --- Hero Section --- */
+#hero {
+    position: relative;
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--white-color);
+    overflow: hidden; /* Ensure video doesn't overflow */
+}
+
+#hero::before { /* Dark overlay for readability */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+    z-index: 1;
+}
+
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+#bg-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the entire area */
+}
+
+.hero-content {
+    position: relative; /* Ensure content is above overlay */
+    z-index: 2;
+    max-width: 700px;
+}
+
+.hero-content h2 {
+    font-size: 3.5rem;
+    margin-bottom: 0.5em;
+    color: var(--white-color);
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+    font-size: 1.3rem;
+    margin-bottom: 1.5em;
+    font-weight: 300;
+     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Call to Action Button --- */
+.cta-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    border: none;
+    cursor: pointer;
+    font-family: var(--body-font); /* Ensure button uses body font */
+    font-size: 1rem;
+}
+
+.cta-button:hover {
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+    transform: translateY(-3px); /* Slight lift effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.cta-button.secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.cta-button.secondary:hover {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-color: var(--primary-color);
+     transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* --- About Section --- */
+#about .container {
+    max-width: 800px; /* Slightly narrower for readability */
+    text-align: center;
+}
+
+/* --- Classes Section --- */
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.class-item {
+    background-color: var(--white-color);
+    padding: 0; /* Remove padding here, add to content below */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    overflow: hidden; /* Ensure image fits rounded corners */
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.class-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
+}
+
+.class-item img {
+    width: 100%;
+    height: 200px; /* Fixed height for consistency */
+    object-fit: cover;
+    margin-bottom: 0;
+}
+
+.class-item h3 {
+    margin-top: 1.5em; /* Space between image and title */
+    margin-bottom: 0.5em;
+    color: var(--primary-color);
+}
+
+.class-item p {
+    font-size: 0.95rem;
+    padding: 0 20px 20px; /* Padding for text content */
+    color: #555;
+    margin-bottom: 0;
+}
+
+#classes .cta-button {
+    display: block; /* Make button block level */
+    width: fit-content; /* Fit content width */
+    margin: 20px auto 0; /* Center button */
+}
+
+
+/* --- Contact Section --- */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* Adjust ratio as needed */
+    gap: 40px;
+    align-items: start; /* Align items to the top */
+}
+
+.contact-info h3,
+.contact-form h3 {
+    margin-bottom: 1em;
+    color: var(--primary-color);
+    font-size: 1.4rem;
+}
+
+.contact-info p {
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+}
+.contact-info a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+.contact-info a:hover {
+    color: var(--accent-color);
+}
+
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 400;
+    color: #555;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: var(--body-font);
+    font-size: 1rem;
+    transition: border-color var(--transition-speed);
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(106, 141, 143, 0.3);
+}
+
+.contact-form textarea {
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 120px;
+}
+
+.contact-form button[type="submit"] {
+    margin-top: 10px;
+}
+
+.form-status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    display: none; /* Hidden by default */
+}
+
+.form-status.success {
+    background-color: #d4edda; /* Light green */
+    color: #155724; /* Dark green */
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.form-status.error {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red */
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+.form-status.sending {
+    background-color: #fff3cd; /* Light yellow */
+    color: #856404; /* Dark yellow */
+    border: 1px solid #ffeeba;
+    display: block;
+}
+
+/* --- Footer --- */
+#main-footer {
+    background-color: var(--dark-color);
+    color: var(--light-color);
+    text-align: center;
+    padding: 30px 0;
+    margin-top: 50px; /* Space above footer */
+}
+
+#main-footer p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    html {
+        font-size: 15px; /* Slightly smaller base font */
+    }
+
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.8rem; }
+    .hero-content h2 { font-size: 2.5rem; }
+    .hero-content p { font-size: 1.1rem; }
+
+    #main-header .container {
+        flex-direction: column;
+        align-items: flex-start; /* Align logo to left */
+    }
+
+    #main-header nav {
+        width: 100%;
+        display: none; /* Hide nav by default */
+        margin-top: 15px;
+    }
+
+    #main-header nav.active {
+        display: block; /* Show nav when active */
+    }
+
+    #main-header nav ul {
+        flex-direction: column;
+        align-items: flex-start; /* Align links to left */
+    }
+
+    #main-header nav ul li {
+        margin-left: 0;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    #main-header nav ul li a {
+        display: block; /* Make links take full width */
+        padding: 10px 0;
+    }
+     #main-header nav ul li a::after { /* Adjust underline for vertical nav */
+        right: auto;
+        left:0;
+     }
+
+
+    .mobile-nav-toggle {
+        display: block; /* Show toggle button */
+        position: absolute;
+        top: 15px;
+        right: 20px;
+    }
+
+    .content-section {
+        padding: 60px 0;
+    }
+
+    .class-grid {
+        grid-template-columns: 1fr; /* Stack class items */
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr; /* Stack contact info and form */
+        gap: 30px;
+    }
+
+    .contact-info {
+        text-align: center;
+    }
+}
+
+/* --- Chatbot Styles --- */
+.chat-toggle-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: var(--primary-color); /* Use website's primary color */
+    color: var(--white-color);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px; /* Adjust icon size if needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1001; /* Above chat window */
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.chat-toggle-btn:hover {
+    background-color: var(--accent-color); /* Use website's accent color */
+    transform: scale(1.1);
+}
+
+.chat-toggle-btn.hidden {
+    display: none; /* Hide button when chat is open */
+}
+
+.chat-container {
+    position: fixed;
+    bottom: 30px; /* Start slightly above the button */
+    right: 30px;
+    width: 350px; /* Adjust width */
+    max-width: 90%;
+    height: 500px; /* Adjust height */
+    max-height: 80vh;
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    opacity: 0; /* Hidden by default */
+    visibility: hidden; /* Hidden by default */
+    transform: translateY(20px); /* Start slightly lower */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.chat-container.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* Move to final position */
+}
+
+.chat-header {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    cursor: grab; /* Indicate draggable */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.chat-header:active {
+     cursor: grabbing;
+}
+
+#botAvatar {
+    width: 35px; /* Adjust avatar size */
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 1px solid var(--light-color);
+}
+
+
+.chat-close {
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0 5px;
+}
+.chat-close:hover {
+    color: var(--accent-color);
+}
+
+
+.chat-body {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto; /* Enable scrolling for messages */
+    background-color: var(--light-color); /* Light background for chat area */
+    border-bottom: 1px solid #eee;
+}
+
+/* Styling for individual messages */
+.chat-body .message {
+    margin-bottom: 12px;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+.chat-body .message b { /* Sender name */
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.chat-body .bot-message b {
+    color: var(--primary-color); /* Bot name color */
+}
+.chat-body .you-message b {
+    color: var(--accent-color); /* User name color */
+}
+
+
+/* Style markdown elements */
+.chat-body .message p {
+    margin-bottom: 0.5em; /* Spacing between paragraphs in a message */
+}
+.chat-body .message ul,
+.chat-body .message ol {
+    margin-left: 20px;
+    margin-bottom: 0.5em;
+}
+.chat-body .message code {
+    background-color: #eee;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.chat-body .message pre {
+    background-color: #eee;
+    padding: 8px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.chat-footer {
+    display: flex;
+    padding: 10px 15px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+}
+
+.chat-input {
+    flex-grow: 1;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Rounded input */
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+.chat-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.btn-send {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%; /* Circular send button */
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color var(--transition-speed);
+}
+
+.btn-send:hover {
+    background-color: var(--accent-color);
+}
+
+/* Typing Indicator Animation */
+.typing-indicator span {
+    display: inline-block;
+    background-color: var(--primary-color);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typing 1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.1s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1.0); }
+}
+
+/* Responsive adjustments for chat */
+@media (max-width: 480px) {
+    .chat-container {
+        width: 95%;
+        height: 75vh;
+        bottom: 10px;
+        right: 10px;
+        left: 10px; /* Center on small screens */
+        margin: 0 auto;
+    }
+    .chat-toggle-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+}

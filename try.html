@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fit-Well Yoga - Find Your Inner Peace</title>
+
+    <!-- Original Yoga Site CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Added Dependencies for Chatbot & Styling -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <!-- Google Fonts for Yoga Site & Chatbot -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Added Chatbot CSS -->
+    <style>
+        /* --- Root Variables for Easy Theming --- */
+        :root {
+            --primary-color: #457b9d;       /* Original Blue */
+            --primary-dark: #1d3557;        /* Darker Blue */
+            --secondary-color: #a8dadc;     /* Lighter Blue */
+            --accent-color: #e63946;        /* A contrasting accent (e.g., for send) */
+            --text-light: #ffffff;
+            --text-dark: #333;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;          /* Slightly off-white background */
+            --bg-medium: #f1f1f1;         /* Chat body background */
+            --bg-widget: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --shadow-hover-color: rgba(0, 0, 0, 0.25);
+            /* Use Poppins from chatbot CSS, falling back to yoga site fonts */
+            --font-family: 'Poppins', 'Montserrat', sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --border-radius-base: 15px;
+            --border-radius-large: 20px;
+            --border-radius-small: 10px;
+            --transition-speed: 0.3s;
+            --transition-easing: cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth easing */
+            --primary-color-rgb: 69, 123, 157; /* Added for focus shadow */
+        }
+
+        /* --- Apply Base Font to Chatbot elements specifically --- */
+        .chat-container, .chat-toggle-btn {
+            font-family: var(--font-family);
+        }
+        /* Ensure main body uses yoga site fonts unless overridden */
+        body {
+             font-family: 'Montserrat', sans-serif; /* Yoga site default */
+             margin: 0; /* Reset default margin */
+             padding: 0; /* Reset default padding */
+        }
+
+
+        /* --- Chat Toggle Button --- */
+        .chat-toggle-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            font-size: 28px; /* Slightly larger icon */
+            cursor: pointer;
+            box-shadow: 0px 5px 15px var(--shadow-color);
+            transition: all var(--transition-speed) var(--transition-easing); /* Animate all properties */
+            z-index: 1050;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .chat-toggle-btn.hidden {
+            opacity: 0;
+            transform: scale(0.5) rotate(-90deg); /* Add rotation */
+            pointer-events: none;
+        }
+
+        .chat-toggle-btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            box-shadow: 0px 8px 20px var(--shadow-hover-color);
+            transform: scale(1.1); /* Scale up on hover */
+        }
+
+        .chat-toggle-btn:active {
+            transform: scale(1.05); /* Slight shrink on click */
+        }
+
+        /* --- Chat Container --- */
+        .chat-container {
+            position: fixed;
+            bottom: 100px; /* Position above the toggle button */
+            right: 30px;
+            width: 400px;
+            height: 600px; /* Slightly taller */
+            max-height: calc(100vh - 120px);
+            background: var(--bg-widget);
+            border-radius: var(--border-radius-large); /* Larger radius */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+            display: none; /* Start hidden */
+            flex-direction: column;
+            z-index: 1040;
+            border: 1px solid var(--border-color);
+            transition: opacity var(--transition-speed) var(--transition-easing),
+                        transform var(--transition-speed) var(--transition-easing);
+            opacity: 0;
+            transform: scale(0.95) translateY(20px); /* Start slightly lower and smaller */
+            transform-origin: bottom right;
+            overflow: hidden; /* Ensure content respects border-radius */
+        }
+
+        .chat-container.visible {
+            display: flex;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* --- Chat Header --- */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600; /* Slightly bolder */
+            padding: 15px 20px; /* More padding */
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-color)); /* Header gradient */
+            color: var(--text-light);
+            border-top-left-radius: calc(var(--border-radius-large) - 1px); /* Match container radius */
+            border-top-right-radius: calc(var(--border-radius-large) - 1px);
+            cursor: grab;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle separator */
+        }
+
+        .chat-header:active {
+            cursor: grabbing;
+        }
+
+        .chat-header img#botAvatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.7); /* More prominent border */
+            background-color: var(--bg-light); /* Fallback background */
+        }
+
+        .chat-header span:first-of-type {
+            flex-grow: 1;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .chat-close {
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 5px;
+            line-height: 1;
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.2s ease, transform 0.2s ease; /* Add transform transition */
+        }
+
+        .chat-close:hover {
+            color: var(--text-light);
+            transform: rotate(90deg); /* Rotate close icon on hover */
+        }
+
+        /* --- Chat Body --- */
+        .chat-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px; /* More padding */
+            background: var(--bg-medium);
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--primary-color) var(--bg-light); /* Firefox */
+        }
+
+        /* Custom Scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+        .chat-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-body::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 4px;
+        }
+        .chat-body::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            border: 2px solid var(--bg-light);
+        }
+        .chat-body::-webkit-scrollbar-thumb:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .chat-body p { /* Affects user/bot messages */
+            margin-bottom: 15px; /* More space between messages */
+            line-height: 1.6; /* Improved readability */
+            max-width: 100%;
+            word-wrap: break-word;
+            padding: 12px 18px; /* More padding inside bubbles */
+            border-radius: var(--border-radius-base);
+            position: relative; /* For potential future ::before/::after tweaks */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow on messages */
+            font-size: 0.95rem; /* Ensure chatbot text size is consistent */
+        }
+
+        .chat-body p b { /* Sender name styling */
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8em; /* Smaller sender name */
+            font-weight: 700; /* Bolder sender name */
+            opacity: 0.8; /* Slightly muted sender name */
+        }
+
+        .chat-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* User Message Styling */
+        .you-message {
+            text-align: left;
+            margin-left: auto;
+            max-width: 85%; /* Allow slightly wider messages */
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius-base) var(--border-radius-base) var(--border-radius-small) var(--border-radius-base); /* Slightly different rounding */
+            color: var(--primary-dark);
+        }
+        .you-message b {
+            color: var(--primary-dark);
+        }
+
+        /* Bot Message Styling */
+        .bot-message {
+            text-align: left;
+            margin-right: auto;
+            max-width: 85%;
+            background-color: var(--bg-widget); /* White background for contrast */
+            border-radius: var(--border-radius-base) var(--border-radius-base) var(--border-radius-base) var(--border-radius-small); /* Mirror user rounding */
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        .bot-message b {
+            color: var(--primary-color);
+        }
+
+        /* Markdown Styling in Bot Messages */
+        .bot-message > div { margin: 0; padding: 0; } /* Reset div wrapper */
+        .bot-message div p, /* Target p inside the div created by marked */
+        .bot-message div ul,
+        .bot-message div ol,
+        .bot-message div pre,
+        .bot-message div blockquote {
+            margin-bottom: 12px !important; /* Ensure spacing inside markdown content */
+            line-height: 1.65; /* Even better line height for readability */
+            font-size: 0.95rem; /* Match bubble font size */
+        }
+        .bot-message div ul,
+        .bot-message div ol { padding-left: 28px; } /* More indent */
+        .bot-message div li { margin-bottom: 8px; }
+        .bot-message code:not(pre code) {
+            background-color: var(--bg-medium); /* Use theme bg color */
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
+            font-family: 'Fira Code', monospace; /* Use a nice coding font if available */
+            border: 1px solid var(--border-color);
+            word-wrap: break-word; /* Prevent long code words from overflowing */
+        }
+        .bot-message pre {
+            background-color: #2d2d2d; /* Darker code block bg */
+            color: #f1f1f1; /* Light text for code */
+            padding: 15px;
+            border-radius: var(--border-radius-small);
+            overflow-x: auto; /* Allow horizontal scroll for long code lines */
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88em;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Inset shadow */
+        }
+        .bot-message pre code { padding: 0; background: none; color: inherit; }
+        .bot-message blockquote {
+            border-left: 4px solid var(--secondary-color); /* Use theme accent */
+            padding-left: 18px;
+            margin-left: 0;
+            color: var(--text-muted);
+            font-style: italic;
+            background-color: var(--bg-light); /* Subtle bg for blockquote */
+            border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+        }
+
+        /* --- Chat Footer --- */
+        .chat-footer {
+            padding: 15px 15px; /* More padding */
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            background: var(--bg-light); /* Lighter footer bg */
+            border-bottom-left-radius: calc(var(--border-radius-large) - 1px); /* Match container */
+            border-bottom-right-radius: calc(var(--border-radius-large) - 1px);
+            gap: 10px; /* More gap */
+            flex-shrink: 0;
+        }
+
+        .chat-footer input[type="text"] {
+            flex-grow: 1;
+            border-radius: var(--border-radius-large); /* Rounded input */
+            padding: 10px 18px; /* More padding */
+            border: 1px solid var(--border-color);
+            font-size: 1rem; /* Slightly larger input font */
+            min-width: 50px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: var(--bg-widget); /* White input background */
+            font-family: var(--font-family); /* Ensure font consistency */
+        }
+
+        .chat-footer input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb, 69, 123, 157), 0.3);
+        }
+
+        .chat-footer .btn-send { /* Specific to chat send button */
+            flex-shrink: 0;
+            border-radius: 50%;
+            width: 45px; /* Larger send button */
+            height: 45px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); /* Use gradient */
+            border: none;
+            transition: background var(--transition-speed) ease, transform 0.15s ease; /* Faster transform */
+            cursor: pointer;
+        }
+
+        .chat-footer .btn-send:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            transform: scale(1.1); /* Scale effect */
+        }
+        .chat-footer .btn-send:active {
+            transform: scale(0.95); /* Press effect */
+        }
+
+        .chat-footer .btn-send svg, .chat-footer .btn-send i { /* Target icon font too */
+            width: 20px; /* Adjust icon size */
+            height: 20px;
+            line-height: 1; /* Helps center icon fonts */
+            color: var(--text-light);
+            transition: transform 0.2s ease; /* Animate icon */
+        }
+        .chat-footer .btn-send:hover svg, .chat-footer .btn-send:hover i {
+            transform: translateX(2px); /* Slight icon move on hover */
+        }
+
+        /* --- Typing Indicator --- */
+        @keyframes bubblePulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .typing-indicator { /* Base style for the typing indicator paragraph */
+            padding: 12px 18px;
+            background-color: var(--bg-widget); /* Match bot message background */
+            border-radius: var(--border-radius-base) var(--border-radius-base) var(--border-radius-base) var(--border-radius-small);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            margin-right: auto;
+            max-width: 85%;
+            display: inline-flex; /* Use inline-flex for alignment */
+            align-items: center; /* Vertically align dots */
+            min-height: 45px; /* Match message padding approx */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Match message shadow */
+            font-size: 0.95rem; /* Match bubble text size */
+        }
+
+        .typing-indicator b { /* Style for the "Bot:" part */
+            color: var(--primary-color); /* Match bot sender */
+            font-weight: 700;
+            font-size: 0.8em;
+            margin-right: 8px;
+            opacity: 0.8;
+            display: inline-block; /* Keep it inline */
+        }
+
+        .typing-indicator span.typing-dot-container { /* Container for the dots */
+             display: inline-block;
+        }
+
+        .typing-indicator span.typing-dot { /* Individual dot styling */
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-dark); /* Use darker blue */
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bubblePulse 1.4s infinite ease-in-out;
+        }
+
+        /* Animation delays */
+        .typing-indicator span.typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        /* --- Responsive Adjustments for Chatbot --- */
+        @media (max-width: 480px) {
+            .chat-container {
+                bottom: 0; /* Stick to bottom */
+                right: 0;
+                width: 100%;
+                height: 100%; /* Full height */
+                max-height: none;
+                border-radius: 0; /* No radius on mobile fullscreen */
+                border: none;
+                box-shadow: none; /* No shadow needed */
+                transition: transform var(--transition-speed) var(--transition-easing); /* Only transition transform */
+                transform: translateY(100%); /* Slide in from bottom */
+            }
+            .chat-container.visible {
+                transform: translateY(0);
+                opacity: 1; /* Ensure opacity is set */
+            }
+            .chat-header {
+                 border-top-left-radius: 0; /* Remove radius */
+                 border-top-right-radius: 0;
+                 padding: 12px 15px; /* Adjust padding */
+            }
+            .chat-footer {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                padding: 10px 12px; /* Adjust padding */
+            }
+            .chat-toggle-btn {
+                width: 60px;
+                height: 60px;
+                bottom: 15px;
+                right: 15px;
+                font-size: 26px;
+            }
+            .you-message, .bot-message, .typing-indicator {
+                max-width: 90%; /* Slightly more width usage */
+            }
+            .chat-body {
+                padding: 15px;
+            }
+             .chat-footer input[type="text"] {
+                 padding: 9px 15px;
+                 font-size: 0.95rem;
+             }
+             .chat-footer .btn-send {
+                 width: 42px;
+                 height: 42px;
+             }
+             .chat-footer .btn-send svg, .chat-footer .btn-send i {
+                 width: 18px;
+                 height: 18px;
+             }
+        }
+        /* --- Ensure original site styles are not broken --- */
+        /* Add specific overrides here if necessary, but the chatbot CSS is mostly scoped */
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation (from original site) -->
+    <header id="main-header">
+        <div class="container">
+            <h1 class="logo">Serene<span class="highlight">Flow</span></h1>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#classes">Classes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+             <button class="mobile-nav-toggle" aria-label="Toggle navigation">☰</button>
+        </div>
+    </header>
+
+    <!-- Hero Section with Video Background (from original site) -->
+    <section id="hero">
+        <div class="video-background">
+            <!-- IMPORTANT: Add your video source path here -->
+            <div class="video-background">
+                <!-- IMPORTANT: Video path updated! Make sure yoga-video.mp4 is in public/videos/ -->
+                <video muted loop playsinline autoplay id="bg-video"> {/* Added autoplay back for background */}
+                    <source src="video.mp4" type="video/mp4">
+                    Your browser does not support the video tag. Provide a fallback image maybe?
+                    <!-- Example Fallback Image (optional) -->
+                    <!-- <img src="images/yoga-fallback.jpg" alt="Woman doing yoga pose"> -->
+                </video>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="container">
+                <h2>Embrace Tranquility, Build Strength</h2>
+                <p>Discover the transformative power of yoga. Join our vibrant community today.</p>
+                <a href="#classes" class="cta-button">Explore Our Classes</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section (from original site) -->
+    <section id="about" class="content-section">
+        <div class="container">
+            <h2>Welcome to Fit-Well</h2>
+            <p>We believe yoga is more than just exercise; it's a journey towards inner peace, strength, and balance. Our studio offers a welcoming space for all levels, from beginners to experienced practitioners. Let our experienced instructors guide you.</p>
+        </div>
+    </section>
+
+    <!-- Classes Section (from original site) -->
+    <section id="classes" class="content-section alt-bg">
+        <div class="container">
+            <h2>Our Classes</h2>
+            <div class="class-grid">
+                <div class="class-item">
+                    <!-- IMPORTANT: Replace YOUR_IMAGE_PATH_HERE with the correct path -->
+                    <img src="data:image/jpeg;base64,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" alt="Vinyasa Flow" loading="lazy">
+                    <h3>Vinyasa Flow</h3>
+                    <p>Dynamic sequences synchronizing breath with movement. Builds heat, flexibility, and focus.</p>
+                </div>
+                <div class="class-item">
+                    <!-- IMPORTANT: Replace YOUR_IMAGE_PATH_HERE with the correct path -->
+                     <img src="data:image/jpeg;base64,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" alt="Hatha Yoga" loading="lazy">
+                    <h3>Hatha Yoga</h3>
+                    <p>A foundational practice focusing on postures and breath control. Great for beginners.</p>
+                </div>
+                <div class="class-item">
+                    <!-- IMPORTANT: Replace YOUR_IMAGE_PATH_HERE with the correct path -->
+                     <img src="data:image/jpeg;base64,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" alt="Restorative Yoga" loading="lazy">
+                    <h3>Restorative Yoga</h3>
+                    <p>Gentle, supportive poses held for longer durations to promote deep relaxation and healing.</p>
+                </div>
+                 <div class="class-item">
+                    <!-- IMPORTANT: Replace YOUR_IMAGE_PATH_HERE with the correct path -->
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb61bH7e06qNw_x6NUOh-2yWdPx1cQiVuzpQ&s" alt="Power Yoga" loading="lazy">
+                    <h3>Power Yoga</h3>
+                    <p>An energetic and challenging practice designed to build strength, stamina, and mental grit.</p>
+                </div>
+            </div>
+             <a href="#contact" class="cta-button secondary">View Full Schedule</a>
+       </div>
+    </section>
+
+    <!-- Contact Section (from original site) -->
+    <section id="contact" class="content-section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <p>Ready to start your journey or have questions? Reach out to us!</p>
+
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Contact Details</h3>
+                     <p><strong>Email:</strong> <a href="mailto:gouravjaiswal2005@gmail.com">gouravjaiswal2005@gmail.com</a><br>
+                        <strong>Phone:</strong> <a href="tel:9068911914">+91 9068911914</a><br>
+                        <strong>Address:</strong> 123 Yoga Lane, Tranquility City, ST 12345</p>
+                    
+                </div>
+
+                <form id="contact-form" class="contact-form">
+                    <h3>Send Us a Message</h3>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="cta-button">Send Message</button>
+                    <div id="form-status" class="form-status"></div> <!-- For feedback -->
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (from original site) -->
+    <footer id="main-footer">
+         <div class="container">
+            <p>© 2024 Fit-Well Yoga. All Rights Reserved.
+                12303102 Aditya Tiwari, Riya Kumari
+            </p>
+            {/* Maybe add back-to-top link or social icons */}
+         </div>
+    </footer>
+
+    <!-- Added Chatbot HTML Elements -->
+    <!-- Floating Chatbot Button -->
+    <button class="chat-toggle-btn" onclick="toggleChat()" title="Ask the Yoga Bot">
+        <!-- Using Bootstrap Icons -->
+        <i class="bi bi-chat-dots-fill"></i>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div class="chat-container" id="chatbox">
+        <div class="chat-header" id="chatHeader">
+            <!-- IMPORTANT: Replace YOUR_IMAGE_PATH_HERE with the path to your bot's avatar -->
+            <img src="Untitled.png" alt="Yoga Bot Avatar" id="botAvatar">
+            <span>Fit-Well Yoga Bot</span>
+            <span class="chat-close" onclick="toggleChat()" title="Close Chat">✕</span>
+        </div>
+        <div class="chat-body" id="response">
+             <!-- Initial bot message -->
+             <p class="bot-message">
+                 <b>Yoga Bot:</b> Namaste! 🙏 Ask me about specific yoga postures (asanas), our classes, benefits, or anything else I can help with today!
+             </p>
+        </div>
+        <!-- Chat Footer -->
+        <div class="chat-footer">
+            <!-- Text Input - uses form-control class from Bootstrap CSS -->
+            <input type="text" class="form-control" id="userInput" placeholder="Ask anything about yoga..." aria-label="User input for yoga bot"> 
+            <!-- Send Button -->
+            <button class="btn btn-primary btn-send" onclick="sendMessage()" aria-label="Send message" title="Send">
+                <!-- Using Bootstrap Icons -->
+                 <i class="bi bi-send-fill"></i>
+            </button>
+        </div> <!-- END chat-footer -->
+    </div>
+    <!-- End of Added Chatbot HTML Elements -->
+
+
+    <!-- Added JS Dependencies for Chatbot -->
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Bootstrap Bundle JS (needed for potential components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Original Yoga Site JS -->
+    <script src="script.js"></script>
+
+    <!-- Added Chatbot JavaScript (Modified) -->
+    <script>
+        "use strict";
+
+        // DOM Elements
+        const chatbox = document.getElementById("chatbox");
+        const chatHeader = document.getElementById("chatHeader");
+        const responseDiv = document.getElementById('response');
+        const userInput = document.getElementById('userInput');
+        const toggleButton = document.querySelector('.chat-toggle-btn');
+
+        
+        if (userInput) {
+            userInput.placeholder = "Ask anything about yoga..."; 
+        }
+
+        if (responseDiv) {
+            responseDiv.innerHTML = `
+                <p class="bot-message">
+                    <b>Yoga Bot:</b> Namaste! 🙏 Ask me about specific yoga postures (asanas), our classes, benefits, or anything else I can help with today!
+                </p>
+            `; // Fixed welcome message rendering
+        }
+
+        // --- CONFIGURATION ---
+        // !! IMPORTANT: Using the API key you provided. Do NOT share this publicly. !!
+        const apiBearerToken = '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'; // Kept as requested
+        const siteUrl = 'https://your-fitwell-yoga-website.com'; // IMPORTANT: Replace with your actual website URL for OpenRouter
+        const siteName = 'Fit-Well Yoga Bot';
+        const modelIdentifier = "mistralai/mistral-7b-instruct:free"; // Or another model from OpenRouter
+
+        // --- State ---
+        let isChatboxVisible = false;
+
+        // --- System Prompt ---
+        // NOTE: The instruction to refuse non-yoga topics is still here,
+        // but the *code* will no longer enforce it. The AI might still sometimes refuse based on this prompt.
+        // You could remove or modify the "CRITICAL INSTRUCTION" part below for better results if you want it to always try answering.
+        const systemPrompt = `You are 'Yoga Asana & Info Bot', a friendly and knowledgeable AI assistant for the Fit-Well Yoga website. Your primary goal is to provide clear, helpful, and safe information about yoga postures (asanas), including step-by-step instructions, benefits, common mistakes, and modifications. You can also discuss Fit-Well Yoga's classes and general yoga topics.
+
+You can also answer general questions about yoga, such as:
+- The overall benefits of yoga (physical, mental, spiritual).
+- Brief history and philosophy of yoga.
+- Descriptions of different yoga styles (Hatha, Vinyasa, Ashtanga, Yin, etc.).
+- Basic explanations of pranayama (breathing techniques) and meditation in the context of yoga.
+
+*IMPORTANT SAFETY NOTE:* Always include a disclaimer when providing pose instructions, reminding the user to listen to their body, consult a qualified instructor (mentioning Fit-Well Yoga is good), and seek medical advice if they have health conditions. Example: "Remember to listen to your body and avoid any pain. Learning from a qualified instructor at Fit-Well Yoga is recommended, especially if you're new or have health concerns."
+
+*CRITICAL INSTRUCTION:* You *MUST REFUSE* to answer any question that is *completely unrelated* to yoga. If the user asks about the weather, movies, math, politics, coding, personal opinions, or any other non-yoga topic, you *MUST* politely decline. State your specialization and guide them back to yoga. Example refusal: "My expertise is in yoga! I can tell you about poses or yoga philosophy, but I can't help with [unrelated topic]. Do you have a yoga question I can answer?"
+
+Keep your answers informative, encouraging, and focused on yoga when appropriate, but try to be helpful if asked other questions. Use Markdown for clear formatting (like lists for steps).`;
+
+
+        // --- Utility Functions ---
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') return unsafe;
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function scrollToBottom() {
+             requestAnimationFrame(() => {
+                 if (responseDiv) {
+                    responseDiv.scrollTo({ top: responseDiv.scrollHeight, behavior: 'smooth' });
+                 }
+             });
+        }
+
+        // --- Chatbot UI Logic ---
+        function toggleChat() {
+            if (!chatbox || !toggleButton) return;
+            isChatboxVisible = !isChatboxVisible;
+            if (isChatboxVisible) {
+                chatbox.classList.add('visible');
+                toggleButton.classList.add('hidden');
+                if (parseInt(chatbox.style.top) < 0 || parseInt(chatbox.style.left) < 0 || parseInt(chatbox.style.top) > (window.innerHeight - 50) || parseInt(chatbox.style.left) > (window.innerWidth - 50)) {
+                     chatbox.style.bottom = '100px'; chatbox.style.right = '30px';
+                     chatbox.style.top = 'auto'; chatbox.style.left = 'auto';
+                }
+                if (userInput) userInput.focus();
+                scrollToBottom();
+            } else {
+                chatbox.classList.remove('visible');
+                toggleButton.classList.remove('hidden');
+            }
+        }
+
+        function appendMessage(sender, message, isHtml = false) {
+             if (!responseDiv) return;
+            const messageElement = document.createElement("p");
+            const senderClass = sender.toLowerCase().replace(/\s+/g, '-');
+            messageElement.classList.add(`${senderClass}-message`);
+
+            messageElement.innerHTML = `<b>${escapeHtml(sender)}:</b> `;
+
+            if (isHtml && typeof marked !== 'undefined') {
+                 marked.setOptions({
+                    breaks: true, gfm: true, sanitize: false, mangle: false, headerIds: false
+                 });
+                 const contentDiv = document.createElement('div');
+                 contentDiv.innerHTML = marked.parse(message);
+                 messageElement.appendChild(contentDiv);
+            } else if (isHtml) {
+                console.error("Marked.js not loaded. Displaying as plain text.");
+                const textNode = document.createTextNode(message);
+                messageElement.appendChild(textNode);
+            } else {
+                const textNode = document.createTextNode(message);
+                messageElement.appendChild(textNode);
+            }
+
+            responseDiv.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+         function showTypingIndicator() {
+            if (!responseDiv || document.getElementById("typingIndicator")) return;
+             const typingIndicator = document.createElement("p");
+             typingIndicator.id = "typingIndicator";
+             typingIndicator.classList.add('bot-message', 'typing-indicator');
+             typingIndicator.innerHTML = `<b>Yoga Bot:</b> <span class="typing-dot-container"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span>`;
+             responseDiv.appendChild(typingIndicator);
+             scrollToBottom();
+         }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById("typingIndicator");
+            if (indicator) indicator.remove();
+        }
+
+        // --- Main Send Message Logic (Relevance Check Removed) ---
+        async function sendMessage() {
+            if (!userInput || !responseDiv || !apiBearerToken) return;
+
+            const input = userInput.value.trim();
+            if (!input) return;
+
+            if (!apiBearerToken.startsWith('sk-or-v1-') || apiBearerToken.length < 50) {
+                 appendMessage("Yoga Bot", `<span style="color: orange; font-weight: bold;">SETUP ISSUE:</span> API key seems invalid. Check 'apiBearerToken' in script.`, true);
+                 return;
+            }
+
+            appendMessage("You", input, false);
+            userInput.value = "";
+
+            // --- Relevance Check REMOVED ---
+            // The following 'if' block that called isQueryRelevant is deleted/commented out.
+            /*
+            if (!isQueryRelevant(input)) {
+                console.log("Query deemed irrelevant (Non-Yoga):", input);
+                const refusalMessage = "My expertise is focused on yoga poses and related topics... Do you have a question about yoga I can assist with?";
+                setTimeout(() => { appendMessage("Yoga Bot", refusalMessage, true); }, 300);
+                if (userInput) userInput.focus();
+                return; // Stop processing
+            }
+            */
+
+            // --- Prepare for API Call ---
+            console.log("Processing query:", input); // Log all queries now
+            showTypingIndicator();
+            const messageForApi = input;
+
+            // --- API Call ---
+            try {
+                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiBearerToken}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': siteUrl,
+                        'X-Title': siteName
+                    },
+                    body: JSON.stringify({
+                        "model": modelIdentifier,
+                        "messages": [
+                            { "role": "system", "content": systemPrompt },
+                            { "role": "user", "content": messageForApi }
+                        ],
+                         "temperature": 0.7, // Slightly higher temp might be needed for broader topics
+                         "max_tokens": 1500,
+                         "stream": false
+                    }),
+                });
+
+                hideTypingIndicator();
+
+                if (!response.ok) {
+                    let errorDetails = `HTTP Error: ${response.status} ${response.statusText}`;
+                    let errorData = null;
+                    try {
+                         errorData = await response.json();
+                         console.error("API Error Response:", errorData);
+                         errorDetails += ` - ${errorData.error?.message || 'No additional details.'}`;
+                    } catch (e) {
+                        try {
+                            const errorText = await response.text();
+                            errorDetails += ` - ${errorText || 'Could not parse error body.'}`;
+                        } catch (textError) {
+                            errorDetails += ' - Could not read error body.';
+                        }
+                    }
+                    if (response.status === 401) errorDetails += " (Hint: Check API Key)";
+                    else if (response.status === 402) errorDetails += " (Hint: Check OpenRouter Credits)";
+                    else if (response.status === 429) errorDetails += " (Hint: Rate Limit)";
+                    else if (response.status >= 500) errorDetails += " (Hint: AI Server Error)";
+                    appendMessage("Yoga Bot", `<span style="color: red;">❌ Error contacting AI: ${escapeHtml(errorDetails)}</span>`, true);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log("API Success Response:", data);
+                const botResponse = data.choices?.[0]?.message?.content;
+
+                if (botResponse) {
+                    appendMessage("Yoga Bot", botResponse.trim(), true);
+                } else {
+                     console.error("No content in successful API response:", data);
+                     appendMessage("Yoga Bot", "Sorry, I received an empty response. Please try again.", true);
+                }
+
+            } catch (error) {
+                hideTypingIndicator();
+                console.error("Fetch/Network Error:", error);
+                 let networkErrorMsg = "Could not reach AI service. Check internet connection.";
+                if (error instanceof TypeError && error.message === 'Failed to fetch') {
+                    networkErrorMsg += " (Network request failed)";
+                } else {
+                     networkErrorMsg += ` (${error.message || 'Unknown error'})`;
+                }
+                appendMessage("Yoga Bot", `<span style="color: red;">❌ Network Error: ${escapeHtml(networkErrorMsg)}</span>`, true);
+            } finally {
+                 if (userInput) userInput.focus();
+            }
+        }
+
+        // --- Event Listeners ---
+         if (userInput) {
+            userInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+
+        // --- Draggable Functionality ---
+        // (Code is identical to the previous answer, included here for completeness)
+        function makeDraggable(element, handle) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            let isDragging = false;
+            const dragHandle = handle || element;
+
+            dragHandle.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.chat-close')) {
+                    return;
+                }
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+                isDragging = true;
+                element.style.transition = 'none';
+                dragHandle.style.cursor = 'grabbing';
+            }
+
+            function elementDrag(e) {
+                if (!isDragging) return;
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                let newTop = element.offsetTop - pos2;
+                let newLeft = element.offsetLeft - pos1;
+                const maxTop = window.innerHeight - element.offsetHeight;
+                const maxLeft = window.innerWidth - element.offsetWidth;
+                newTop = Math.max(0, Math.min(newTop, maxTop < 0 ? 0 : maxTop));
+                newLeft = Math.max(0, Math.min(newLeft, maxLeft < 0 ? 0 : maxLeft));
+                element.style.top = newTop + "px";
+                element.style.left = newLeft + "px";
+                element.style.bottom = 'auto';
+                element.style.right = 'auto';
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                if (isDragging) {
+                     isDragging = false;
+                     element.style.transition = '';
+                     dragHandle.style.cursor = 'grab';
+                }
+            }
+        }
+
+        // Initialize draggable behavior when the DOM is ready
+        window.addEventListener('DOMContentLoaded', () => {
+             if (chatbox && chatHeader) {
+                 makeDraggable(chatbox, chatHeader);
+                 chatHeader.style.cursor = 'grab'; // Set initial cursor
+             } else {
+                 console.error("Chatbox or ChatHeader element not found for dragging.");
+             }
+        });
+        
+
+    </script>
+
+</body>
+</html>
